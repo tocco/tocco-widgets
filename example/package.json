@@ -1,0 +1,15 @@
+{
+  "name": "tocco-widget-example",
+  "version": "0.1.1",
+  "main": "index.js",
+  "scripts": {
+    "link-script": "symlink-dir ../src tocco",
+    "start": "npm run link-script && http-server --port 3000 -o -a localhost -c-1 --silent"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^0.12.3",
+    "symlink-dir": "^4.1.0"
+  }
+}

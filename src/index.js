@@ -27,34 +27,18 @@ window.reactRegistry = (function() {
         'with a renderComponent function or the renderComponent function itself');
   }
 
-  function _render(app, container, id, input, externalEvents, publicPath) {
+  function _render(appName, container, id, input, externalEvents, publicPath) {
     if (input === undefined) {
       input = {};
     }
 
-    input = {...input, customTheme: {colors: {primary: 'yellow'}}};
-    const component = apps[app](id, input, externalEvents, publicPath);
+    const app = apps[appName](id, input, externalEvents, publicPath);
 
-    let type;
-    let methods;
-
-    if (typeof component === 'function') {
-      type = component;
-      methods = {};
-    } else if (typeof component === 'object') {
-      if (typeof component.renderComponent !== 'function') {
-        _throwInitializationError();
-      }
-      type = component.renderComponent;
-      methods = component.methods || {};
-    } else {
-      _throwInitializationError();
+    if (app.component) {
+      var methods = app.methods || {};
+      ReactDOM.render(app.component, container);
+      return methods;
     }
-
-    const element = React.createElement(type);
-    ReactDOM.render(element, container);
-
-    return methods;
   }
 
   function _register(id, constructorFn) {
@@ -68,12 +52,21 @@ window.reactRegistry = (function() {
 })();
 
 
+const transformObjectValue = (val) => {
+  try {
+    return JSON.parse(val);
+    
+  } catch (e) {
+      return val;
+  }
+}
 
 window.toccoWidgets = (async () => {
-  const version = document.currentScript.getAttribute('nice-version');
+  const version = document.currentScript.getAttribute('data-nice-version');
 
-  await loadScriptAsync('https://unpkg.com/react@16/umd/react.production.min.js');
-  await loadScriptAsync('https://unpkg.com/react-dom@16/umd/react-dom.production.min.js');
+  
+  await loadScriptAsync('https://unpkg.com/react@16.13.1/umd/react.production.min.js');
+  await loadScriptAsync('https://unpkg.com/react-dom@16.13.1/umd/react-dom.production.min.js');
 
   const widgetContainerNodeList = document.querySelectorAll('[data-tocco-widget]');
   const widgetContainers = Array.prototype.slice.call(widgetContainerNodeList);
@@ -85,15 +78,16 @@ window.toccoWidgets = (async () => {
   }));
 
   widgetContainers.forEach(container => {
-
     const app = container.getAttribute("data-tocco-widget");
     const attributes = Array.prototype.slice.call(container.attributes);
 
+
     const input = attributes.reduce((acc, val) => ({
       ...acc,
-      [snakeToCamel(val.name.replace('data-', ''))]: val.value
+      [snakeToCamel(val.name.replace('data-', ''))]: transformObjectValue(val.value)
     }), {});
 
+    console.log('i>nput', JSON.stringify(input))
 
     window.reactRegistry.render(
         app,
@@ -101,7 +95,7 @@ window.toccoWidgets = (async () => {
         '',
         input,
         {},
-        'https://unpkg.com/tocco-' + app + 'r@latest/dist/')
+        `https://unpkg.com/tocco-${app}@${version}/dist/`)
   });
 })();
 
