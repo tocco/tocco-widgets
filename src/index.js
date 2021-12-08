@@ -55,7 +55,7 @@ window.reactRegistry = (function() {
 const transformObjectValue = (val) => {
   try {
     return JSON.parse(val);
-    
+
   } catch (e) {
       return val;
   }
@@ -64,7 +64,7 @@ const transformObjectValue = (val) => {
 window.toccoWidgets = (async () => {
   const version = document.currentScript.getAttribute('data-nice-version');
 
-  
+
   await loadScriptAsync('https://unpkg.com/react@16.13.1/umd/react.production.min.js');
   await loadScriptAsync('https://unpkg.com/react-dom@16.13.1/umd/react-dom.production.min.js');
 
@@ -74,7 +74,7 @@ window.toccoWidgets = (async () => {
 
 
   await Promise.all(apps.map(app => {
-    return loadScriptAsync(`https://unpkg.com/tocco-${app}@${version}/dist/index.js`);
+    return loadScriptAsync(`http://localhost:8080/js/tocco-${app}/dist/index.js`);
   }));
 
   widgetContainers.forEach(container => {
@@ -95,7 +95,7 @@ window.toccoWidgets = (async () => {
         '',
         input,
         {},
-        `https://unpkg.com/tocco-${app}@${version}/dist/`)
+        `http://localhost:8080/js/tocco-${app}/dist/`)
   });
 })();
 
