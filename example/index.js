@@ -1,4 +1,4 @@
-const theme = {
+window.toccoTheme = {
   colors: {
     paper: '#F5F5F5',
     primary: '#074a37',
@@ -49,9 +49,3 @@ const theme = {
     large: '4px'
   }
 }
-
-
-
-var widgets = document.querySelectorAll("[data-tocco-widget]"); 
-widgets.forEach(widget => widget.setAttribute("data-custom-theme", JSON.stringify(theme)))
-
